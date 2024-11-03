@@ -270,6 +270,48 @@ fun CharacterCreationScreen(
             Text("Calcular Pontos de Vida", color = Color.White, fontSize = 16.sp)
         }
 
+        // Botão para Salvar Personagem
+        Button(
+            onClick = {
+                val race = getRace(selectedRace)
+                val character = createCharacter(race, strength.toInt(), dexterity.toInt(), constitution.toInt(), intelligence.toInt(), wisdom.toInt(), charisma.toInt())
+                onSaveCharacter(character)
+                successMessage = "Personagem salvo com sucesso!"
+            },
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
+        ) {
+            Text("Salvar Personagem", color = Color.White)
+        }
+
+        // Botão para Atualizar Personagem
+        Button(
+            onClick = {
+                val race = getRace(selectedRace)
+                val character = createCharacter(race, strength.toInt(), dexterity.toInt(), constitution.toInt(), intelligence.toInt(), wisdom.toInt(), charisma.toInt())
+                onUpdateCharacter(character)
+                successMessage = "Personagem atualizado com sucesso!"
+            },
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Yellow)
+        ) {
+            Text("Atualizar Personagem", color = Color.Black)
+        }
+
+        // Botão para Deletar Personagem
+        Button(
+            onClick = {
+                val race = getRace(selectedRace)
+                val character = createCharacter(race, strength.toInt(), dexterity.toInt(), constitution.toInt(), intelligence.toInt(), wisdom.toInt(), charisma.toInt())
+                onDeleteCharacter(character)
+                successMessage = "Personagem deletado com sucesso!"
+            },
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+        ) {
+            Text("Deletar Personagem", color = Color.White)
+        }
+
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
