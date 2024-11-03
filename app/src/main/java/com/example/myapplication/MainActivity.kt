@@ -13,25 +13,70 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.data.DAO.CharacterDAO
+import com.example.myapplication.data.database.AppDatabase
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.races.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private lateinit var characterDAO: CharacterDAO
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val db = AppDatabase.getDatabase(this)
+        characterDAO = db.characterDAO()
+
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CharacterCreationScreen(modifier = Modifier.padding(innerPadding))
+                    CharacterCreationScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onSaveCharacter = { character ->
+                            saveCharacter(character, characterDAO)
+                        },
+                        onUpdateCharacter = { character ->
+                            updateCharacter(character, characterDAO)
+                        },
+                        onDeleteCharacter = { character ->
+                            deleteCharacter(character, characterDAO)
+                        }
+                    )
                 }
             }
         }
     }
 }
 
+private fun saveCharacter(character: Character, characterDAO: CharacterDAO) {
+    CoroutineScope(Dispatchers.IO).launch {
+        characterDAO.insert(character)
+    }
+}
+
+private fun updateCharacter(character: Character, characterDAO: CharacterDAO) {
+    CoroutineScope(Dispatchers.IO).launch {
+        characterDAO.update(character)
+    }
+}
+
+private fun deleteCharacter(character: Character, characterDAO: CharacterDAO) {
+    CoroutineScope(Dispatchers.IO).launch {
+        characterDAO.delete(character)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CharacterCreationScreen(modifier: Modifier = Modifier) {
+fun CharacterCreationScreen(
+    modifier: Modifier = Modifier,
+    onSaveCharacter: (Character) -> Unit = {},
+    onUpdateCharacter: (Character) -> Unit = {},
+    onDeleteCharacter: (Character) -> Unit = {}
+) {
     var strength by remember { mutableStateOf("8") }
     var dexterity by remember { mutableStateOf("8") }
     var constitution by remember { mutableStateOf("8") }
@@ -299,7 +344,7 @@ fun createCharacter(race: Race, strength: Int, dexterity: Int, constitution: Int
         "Sabedoria" to wisdom,
         "Carisma" to charisma
     )
-    val character = Character(attributes, race)
+    val character = Character(attributes = attributes, race = race)
     character.applyRaceBonuses()
     return character
 }

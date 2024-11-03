@@ -1,6 +1,11 @@
 package com.example.myapplication.races
 
-class Character(var attributes: MutableMap<String, Int>, val race: Race) {
+import java.util.Locale
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "character_table")
+data class Character(@PrimaryKey(autoGenerate = true) val id: Int = 0, var attributes: MutableMap<String, Int>, val race: Race) {
     fun applyRaceBonuses() {
         race.bonuses.forEach { (attr, bonus) ->
             attributes[attr] = attributes[attr]!! + bonus
@@ -17,7 +22,7 @@ class Character(var attributes: MutableMap<String, Int>, val race: Race) {
             }
 
             println("Informe o nome do atributo que deseja incrementar:")
-            val attribute = readLine()?.capitalize() ?: ""
+            val attribute = readLine()?.capitalize(Locale.ROOT) ?: ""
             if (!attributes.containsKey(attribute)) {
                 println("Atributo não encontrado.")
                 continue

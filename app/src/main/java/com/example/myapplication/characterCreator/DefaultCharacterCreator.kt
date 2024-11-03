@@ -14,7 +14,7 @@ class DefaultCharacterCreator : CharacterCreator {
             "Carisma" to 8
         )
 
-        val character = Character(attributes, race)
+        val character = Character(attributes = attributes, race = race)
 
         val points = 27
         character.distributePoints(points)
